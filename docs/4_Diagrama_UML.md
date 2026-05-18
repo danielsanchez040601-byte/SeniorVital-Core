@@ -12,62 +12,76 @@ Este artefacto representa el modelo visual de comportamiento de la plataforma **
 
 ```mermaid
 flowchart LR
-    %% ==========================================
-    %% DEFINICIÓN DE ESTILOS ARQUITECTÓNICOS
-    %% ==========================================
-    classDef human fill:#ffcc80,stroke:#e65100,stroke-width:2px,color:#000
-    classDef ai fill:#ce93d8,stroke:#6a1b9a,stroke-width:2px,stroke-dasharray: 5 5,color:#000
-    classDef external fill:#cfd8dc,stroke:#37474f,stroke-width:1px,color:#000
-    classDef uc fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000
+    %% ==========================================================
+    %% DEFINICIÓN DE PALETA CROMÁTICA PROFESIONAL (ISO 25010)
+    %% ==========================================================
+    classDef human fill:#FFE0B2,stroke:#FB8C00,stroke-width:2px,color:#212121
+    classDef ai fill:#E1BEE7,stroke:#8E24AA,stroke-width:2px,stroke-dasharray: 4 4,color:#212121
+    classDef infrastructure fill:#ECEFF1,stroke:#546E7A,stroke-width:1.5px,color:#37474F
+    classDef uc fill:#F1F8E9,stroke:#558B2F,stroke-width:2px,color:#1B5E20
+    classDef ucAI fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1
+    classDef ucAdmin fill:#FFF9C4,stroke:#F57F17,stroke-width:2px,color:#5D4037
 
-    %% ==========================================
-    %% COLUMNA IZQUIERDA: ACTORES INICIADORES
-    %% ==========================================
-    User((Usuario Final +60)):::human
-    Familiar((Familiar/Cuidador)):::human
-    Coach{{Agente Wellness}}:::ai
-    Admin((Fisioterapeuta)):::human
-    Preventivo{{Agente Preventivo}}:::ai
-
-    %% ==========================================
-    %% COLUMNA CENTRAL: LÍMITE DEL SISTEMA
-    %% ==========================================
-    subgraph SeniorVital [Límite del Sistema: Plataforma SeniorVital]
+    %% ==========================================================
+    %% ACTORES IZQUIERDA (HUMANOS Y AGENTES AUTÓNOMOS)
+    %% ==========================================================
+    subgraph Actores [Ecosistema de Actores]
         direction TB
-        CU01(["CU01: Registro y Onboarding<br>«Usabilidad, Seguridad»"]):::uc
-        CU02(["CU02: Generar Rutina Diaria<br>«Eficiencia Desempeño: <2s»"]):::uc
-        CU03(["CU03: Registrar Ejecución (RPE)<br>«Fiabilidad: Offline-First»"]):::uc
-        CU04(["CU04: Proyecciones Temporales<br>«Adecuación Funcional»"]):::uc
-        CU05(["CU05: Dashboard de Progreso<br>«Usabilidad: WCAG 2.1 AA»"]):::uc
-        CU06(["CU06: Modo Cuidador/Familiar<br>«Seguridad: Read-Only»"]):::uc
-        CU07(["CU07: Gestionar Usuarios y Rutinas<br>«Interoperabilidad»"]):::uc
-        CU08(["CU08: Biblioteca de Ejercicios<br>«Mantenibilidad: NoSQL tags»"]):::uc
-        CU09(["CU09: Detección de Estancamiento<br>«Adecuación Funcional»"]):::uc
-        CU10(["CU10: Recordatorios Proactivos<br>«Usabilidad: No punitivos»"]):::uc
-        CU11(["CU11: Registro de Hábitos<br>«Mantenibilidad: Fase 2 Ready»"]):::uc
-
-        %% Enlaces invisibles para forzar apilamiento vertical perfectamente ordenado
-        CU01 ~~~ CU02 ~~~ CU03 ~~~ CU04 ~~~ CU05 ~~~ CU06 ~~~ CU07 ~~~ CU08 ~~~ CU09 ~~~ CU10 ~~~ CU11
+        User((Usuario Final<br>Adulto Mayor +60)):::human
+        Familiar((Familiar /<br>Cuidador)):::human
+        Admin((Fisioterapeuta /<br>Administrador)):::human
+        Coach{{🤖 Agente<br>Wellness Coach}}:::ai
+        Preventivo{{🤖 Agente<br>Preventivo / Analytics}}:::ai
     end
 
-    %% ==========================================
-    %% COLUMNA DERECHA: INFRAESTRUCTURA (GCP)
-    %% ==========================================
-    Auth([Firebase Auth]):::external
-    Firestore[(Cloud Firestore)]:::external
-    Storage[(GCP Storage)]:::external
-    FCM([Firebase Messaging]):::external
+    %% ==========================================================
+    %% LÍMITE DEL SISTEMA (SEGMENTADO EN BLOQUES SEMÁNTICOS)
+    %% ==========================================================
+    subgraph SeniorVital [Límite del Sistema: Plataforma SeniorVital]
+        direction TB
 
-    %% ==========================================
-    %% INTERACCIONES: ACTORES -> CASOS DE USO
-    %% ==========================================
+        subgraph Modulo_Paciente [Eje 1: Experiencia del Adulto Mayor]
+            direction LR
+            CU01(["CU01: Registro y Onboarding<br>«Usabilidad, Seguridad»"]):::uc
+            CU03(["CU03: Registrar Ejecución (RPE)<br>«Fiabilidad: Offline-First»"]):::uc
+            CU05(["CU05: Dashboard de Progreso<br>«Usabilidad: WCAG 2.1 AA»"]):::uc
+            CU11(["CU11: Registro de Hábitos Manuales<br>«Mantenibilidad: Fase 2 Ready»"]):::uc
+        end
+
+        subgraph Modulo_IA [Eje 2: Core Autónomo e Inteligencia Artificial]
+            direction LR
+            CU02(["CU02: Generar Rutina Diaria<br>«Eficiencia: Latencia <2s»"]):::ucAI
+            CU04(["CU04: Proyecciones Temporales<br>«Adecuación Funcional»"]):::ucAI
+            CU09(["CU09: Detección de Estancamiento<br>«Adecuación Funcional»"]):::ucAI
+            CU10(["CU10: Recordatorios Proactivos<br>«Usabilidad: No punitivos»"]):::ucAI
+        end
+
+        subgraph Modulo_Gestion [Eje 3: Control Clínico y Supervisión]
+            direction LR
+            CU06(["CU06: Modo Cuidador/Familiar<br>«Seguridad: Read-Only»"]):::ucAdmin
+            CU07(["CU07: Gestión de Usuarios/Rutinas<br>«Interoperabilidad»"]):::ucAdmin
+            CU08(["CU08: Biblioteca de Ejercicios<br>«Mantenibilidad: NoSQL tags»"]):::ucAdmin
+        end
+    end
+
+    %% ==========================================================
+    %% INFRAESTRUCTURA DERECHA (GOOGLE CLOUD & FIREBASE)
+    %% ==========================================================
+    subgraph Ecosistema_Cloud [Infraestructura GCP / Firebase]
+        direction TB
+        Auth([Firebase Auth]):::infrastructure
+        Firestore[(Cloud Firestore NoSQL)]:::infrastructure
+        Storage[(GCP Storage Buckets)]:::infrastructure
+        FCM([Firebase Messaging FCM]):::infrastructure
+    end
+
+    %% ==========================================================
+    %% ENLACES E INTERACCIONES DE ACTORES
+    %% ==========================================================
     User ---> CU01
     User ---> CU03
     User ---> CU05
     User ---> CU11
-
-    Coach ---> CU02
-    Coach ---> CU09
 
     Familiar ---> CU01
     Familiar ---> CU06
@@ -75,31 +89,31 @@ flowchart LR
     Admin ---> CU07
     Admin ---> CU08
 
+    Coach ---> CU02
+    Coach ---> CU09
+
     Preventivo ---> CU04
     Preventivo ---> CU05
     Preventivo ---> CU06
     Preventivo ---> CU09
     Preventivo ---> CU10
 
-    %% ==========================================
-    %% DEPENDENCIAS (INCLUDES / EXTENDS)
-    %% ==========================================
+    %% ==========================================================
+    %% RELACIONES INTERNAS (INCLUDES / EXTENDS)
+    %% ==========================================================
     CU02 -.->|<< include >>| CU01
     CU03 -.->|<< extend >>| CU02
     CU04 -.->|<< include >>| CU03
 
-    %% ==========================================
-    %% INTERACCIONES: CASOS DE USO -> INFRAESTRUCTURA
-    %% ==========================================
-    CU01 -.->|Valida Token| Auth
-    CU06 -.->|Verifica RBAC| Auth
-
-    CU01 -.->|Guarda Perfil| Firestore
-    CU02 -.->|Lee Tags| Firestore
-    CU03 -.->|Guarda RPE| Firestore
-    CU11 -.->|Persiste Hábito| Firestore
-
-    CU02 -.->|Streaming Video| Storage
-    CU08 -.->|Sube Demostración| Storage
-
-    CU10 -.->|Dispara Push| FCM
+    %% ==========================================================
+    %% CONEXIONES DE PERSISTENCIA Y SERVICIOS NATIVOS CLOUD
+    %% ==========================================================
+    CU01 -.-> Auth
+    CU06 -.-> Auth
+    CU01 -.-> Firestore
+    CU02 -.-> Firestore
+    CU03 -.-> Firestore
+    CU11 -.-> Firestore
+    CU02 -.-> Storage
+    CU08 -.-> Storage
+    CU10 -.-> FCM

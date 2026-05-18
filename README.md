@@ -1,5 +1,3 @@
-# SeniorVital-Core
-Plataforma Inteligente de Bienestar para Adultos Mayores (+60) - AI-Augmented Development
 # 🌟 SeniorVital: Plataforma Inteligente de Bienestar
 
 ![Estado](https://img.shields.io/badge/Estado-Sprint_1_Completado-success)
